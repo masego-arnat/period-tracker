@@ -8,10 +8,13 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"> -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <style>
+    <link href="https://cdn.datatables.net/v/dt/dt-2.3.1/r-3.0.4/datatables.css" rel="stylesheet" integrity="sha384-ASfEqYL6RtWsdGvab58itBscnZN3SfUdRbkWrVc4/rOKlz8ep5Q/7seFu2r1kIlD" crossorigin="anonymous">
+ 
+  
+  <style>
         .hero-section {
             background: linear-gradient(135deg, #ff6b9d, #c44569);
             color: white;
@@ -364,10 +367,10 @@
                                     symptoms: data.symptoms || 'None',
                                     actions: `
                             <button class="btn btn-sm btn-outline-primary me-2" onclick="openEditModal('${doc.id}', '${data.startDate}', '${data.endDate || ''}', '${data.symptoms || ''}')">
-                                ✏️ Edit
+                                ✏️ 
                             </button>
                             <button class="btn btn-sm btn-outline-danger" onclick="deletePeriod('${doc.id}')">
-                                🗑️ Delete
+                                🗑️ 
                             </button>
                         `
                                 };
@@ -704,6 +707,8 @@
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/dt/dt-2.3.1/r-3.0.4/datatables.js" integrity="sha384-wdjpQr6s1e9JSYz1hVdUHZ5oIKygjAkbkjxNwEJfBxfxTGzmG8MxiZHl2vwuOxYg" crossorigin="anonymous"></script>
+
 </body>
 
 </html>
