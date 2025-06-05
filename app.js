@@ -18,6 +18,23 @@ const firebaseConfig = {
     measurementId: "G-BKTH5DMHGB"
 };
 
+
+
+const { google } = require('googleapis');
+
+const oauth2Client = new google.auth.OAuth2(
+    '37241267731-3qut5q306vdnedl3rlvgr0lig8a2uouk.apps.googleusercontent.com',
+    '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',
+    'http://localhost:3000/auth/callback' // Your redirect URI
+);
+
+
+
+
+
+
+
+
 const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(app);
 let currentUser = null;
