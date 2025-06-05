@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,28 +18,34 @@
             padding: 4rem 0;
             text-align: center;
         }
+
         .card {
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border: none;
             border-radius: 12px;
         }
+
         .btn-primary {
             background: linear-gradient(45deg, #ff6b9d, #c44569);
             border: none;
         }
+
         .btn-primary:hover {
             background: linear-gradient(45deg, #e55a8a, #b03e5f);
         }
+
         .google-btn {
             background: #4285f4;
             color: white;
         }
+
         .google-btn:hover {
             background: #357abd;
             color: white;
         }
     </style>
 </head>
+
 <body>
     <div class="hero-section">
         <div class="container">
@@ -85,7 +92,8 @@
                             </div>
                             <div class="mb-3">
                                 <label for="symptoms" class="form-label">Symptoms (Optional)</label>
-                                <textarea class="form-control" id="symptoms" rows="3" placeholder="Cramps, headache, mood changes, etc."></textarea>
+                                <textarea class="form-control" id="symptoms" rows="3"
+                                    placeholder="Cramps, headache, mood changes, etc."></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary w-100">📝 Log Period</button>
                         </form>
@@ -118,7 +126,8 @@
                         </button>
                         <div id="shareLink" class="mt-2 d-none">
                             <input type="text" class="form-control" id="generatedLink" readonly>
-                            <button class="btn btn-sm btn-primary mt-2" onclick="copyToClipboard()">📋 Copy Link</button>
+                            <button class="btn btn-sm btn-primary mt-2" onclick="copyToClipboard()">📋 Copy
+                                Link</button>
                         </div>
                     </div>
                 </div>
@@ -197,7 +206,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="editSymptoms" class="form-label">Symptoms</label>
-                            <textarea class="form-control" id="editSymptoms" rows="3" placeholder="Cramps, headache, etc."></textarea>
+                            <textarea class="form-control" id="editSymptoms" rows="3"
+                                placeholder="Cramps, headache, etc."></textarea>
                         </div>
                     </form>
                 </div>
@@ -238,7 +248,7 @@
             const provider = new firebase.auth.GoogleAuthProvider();
             provider.addScope('email');
             provider.addScope('profile');
-            
+
             auth.signInWithPopup(provider)
                 .then((result) => {
                     currentUser = result.user;
@@ -337,40 +347,38 @@
         function loadCycleHistory() {
             if (!currentUser) return;
 
-            // Destroy existing DataTable (if any) to avoid duplicates
-            if ($.fn.DataTable.isDataTable('#cycleHistoryTable')) {
-                $('#cycleHistoryTable').DataTable().destroy();
-            }
 
-            // Initialize DataTable with proper AJAX handling
+
             $('#cycleHistoryTable').DataTable({
-                ajax: {
-                    url: '', // No URL needed for Firestore
-                    dataSrc: '', // Treat the returned data as an array directly
-                    data: async function () {
-                        const querySnapshot = await db.collection("periods")
-                            .where("userId", "==", currentUser.uid)
-                            .orderBy("timestamp", "desc")
-                            .get();
-                        
-                        // Format the data for DataTables
-                        return querySnapshot.docs.map(doc => {
-                            const data = doc.data();
-                            return {
-                                startDate: data.startDate,
-                                endDate: data.endDate || 'Ongoing',
-                                symptoms: data.symptoms || 'None',
-                                actions: `
-                                    <button class="btn btn-sm btn-outline-primary me-2" onclick="openEditModal('${doc.id}', '${data.startDate}', '${data.endDate || ''}', '${data.symptoms || ''}')">
-                                        ✏️ Edit
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="deletePeriod('${doc.id}')">
-                                        🗑️ Delete
-                                    </button>
-                                `
-                            };
+                ajax: function (data, callback, settings) {
+                    db.collection("periods")
+                        .where("userId", "==", currentUser.uid)
+                        .orderBy("timestamp", "desc")
+                        .get()
+                        .then(querySnapshot => {
+                            const rows = querySnapshot.docs.map(doc => {
+                                const data = doc.data();
+                                return {
+                                    startDate: data.startDate,
+                                    endDate: data.endDate || 'Ongoing',
+                                    symptoms: data.symptoms || 'None',
+                                    actions: `
+                            <button class="btn btn-sm btn-outline-primary me-2" onclick="openEditModal('${doc.id}', '${data.startDate}', '${data.endDate || ''}', '${data.symptoms || ''}')">
+                                ✏️ Edit
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deletePeriod('${doc.id}')">
+                                🗑️ Delete
+                            </button>
+                        `
+                                };
+                            });
+                            // Pass data back to DataTables
+                            callback({ data: rows });
+                        })
+                        .catch(error => {
+                            console.error("Error fetching data from Firestore:", error);
+                            callback({ data: [] }); // Send empty data on error
                         });
-                    }
                 },
                 columns: [
                     { data: 'startDate' },
@@ -379,8 +387,54 @@
                     { data: 'actions', orderable: false }
                 ],
                 responsive: true,
-                destroy: true // Allow reinitialization
+                destroy: true
             });
+
+
+            // // Destroy existing DataTable (if any) to avoid duplicates
+            // if ($.fn.DataTable.isDataTable('#cycleHistoryTable')) {
+            //     $('#cycleHistoryTable').DataTable().destroy();
+            // }
+
+            // // Initialize DataTable with proper AJAX handling
+            // $('#cycleHistoryTable').DataTable({
+            //     ajax: {
+            //         // url: '', 
+            //         // dataSrc: '', 
+            //         data: async function () {
+            //             const querySnapshot = await db.collection("periods")
+            //                 .where("userId", "==", currentUser.uid)
+            //                 .orderBy("timestamp", "desc")
+            //                 .get();
+
+            //             // Format the data for DataTables
+            //             return querySnapshot.docs.map(doc => {
+            //                 const data = doc.data();
+            //                 return {
+            //                     startDate: data.startDate,
+            //                     endDate: data.endDate || 'Ongoing',
+            //                     symptoms: data.symptoms || 'None',
+            //                     actions: `
+            //                         <button class="btn btn-sm btn-outline-primary me-2" onclick="openEditModal('${doc.id}', '${data.startDate}', '${data.endDate || ''}', '${data.symptoms || ''}')">
+            //                             ✏️ Edit
+            //                         </button>
+            //                         <button class="btn btn-sm btn-outline-danger" onclick="deletePeriod('${doc.id}')">
+            //                             🗑️ Delete
+            //                         </button>
+            //                     `
+            //                 };
+            //             });
+            //         }
+            //     },
+            //     columns: [
+            //         { data: 'startDate' },
+            //         { data: 'endDate' },
+            //         { data: 'symptoms' },
+            //         { data: 'actions', orderable: false }
+            //     ],
+            //     responsive: true,
+            //     destroy: true 
+            // });
         }
 
         // Delete Period Entry
@@ -544,10 +598,10 @@
                         const data = doc.data();
                         const li = document.createElement('li');
                         li.className = 'list-group-item';
-                        
+
                         const endDateText = data.endDate ? ` to ${data.endDate}` : ' (ongoing)';
                         const symptomsText = data.symptoms ? `: ${data.symptoms}` : '';
-                        
+
                         li.innerHTML = `
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
@@ -605,7 +659,7 @@
             document.getElementById('editStartDate').value = startDate;
             document.getElementById('editEndDate').value = endDate || '';
             document.getElementById('editSymptoms').value = symptoms || '';
-            
+
             const modal = new bootstrap.Modal(document.getElementById('editModal'));
             modal.show();
         }
@@ -633,22 +687,23 @@
                 symptoms: symptoms || '',
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             })
-            .then(() => {
-                showNotification("Period updated successfully!", 'success');
-                loadCycleHistory();
-                bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
-            })
-            .catch((error) => {
-                console.error("Error updating period:", error);
-                showNotification("Error updating period.", 'error');
-            })
-            .finally(() => {
-                saveButton.disabled = false;
-                saveButton.innerHTML = 'Save Changes';
-            });
+                .then(() => {
+                    showNotification("Period updated successfully!", 'success');
+                    loadCycleHistory();
+                    bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+                })
+                .catch((error) => {
+                    console.error("Error updating period:", error);
+                    showNotification("Error updating period.", 'error');
+                })
+                .finally(() => {
+                    saveButton.disabled = false;
+                    saveButton.innerHTML = 'Save Changes';
+                });
         }
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
