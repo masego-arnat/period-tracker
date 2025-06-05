@@ -13,6 +13,18 @@
             color: white;
             padding: 4rem 0;
             text-align: center;
+            position: relative;
+        }
+        .back-btn {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            color: white;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+        .back-btn:hover {
+            color: #f8f9fa;
         }
         .card {
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -23,6 +35,9 @@
 </head>
 <body>
     <div class="hero-section">
+        <a href="index.html" class="back-btn">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
         <div class="container">
             <h1>📈 Analytics</h1>
             <p class="lead">View your cycle trends and symptoms frequency</p>
