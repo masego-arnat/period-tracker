@@ -3,211 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luna - Smart Period Tracker</title>
+    <title>Period Tracker</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-        }
-        
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
         .hero-section {
-            background: var(--primary-gradient);
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
             color: white;
-            padding: 3rem 0;
+            padding: 4rem 0;
             text-align: center;
-            backdrop-filter: blur(10px);
         }
-        
-        .glass-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            color: white;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-        }
-        
-        .btn-gradient {
-            background: var(--secondary-gradient);
+        .card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border: none;
+            border-radius: 12px;
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #e55a8a, #b03e5f);
+        }
+        .google-btn {
+            background: #4285f4;
             color: white;
-            border-radius: 25px;
-            padding: 12px 30px;
-            font-weight: 600;
-            transition: all 0.3s ease;
         }
-        
-        .btn-gradient:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        .google-btn:hover {
+            background: #357abd;
             color: white;
         }
-        
-        .cycle-phase {
-            padding: 15px;
-            border-radius: 15px;
-            margin: 10px 0;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-        }
-        
-        .menstrual { background: linear-gradient(45deg, #ff6b6b, #ee5a52); }
-        .follicular { background: linear-gradient(45deg, #4ecdc4, #44a08d); }
-        .ovulation { background: linear-gradient(45deg, #feca57, #ff9ff3); }
-        .luteal { background: linear-gradient(45deg, #a8edea, #fed6e3); }
-        
-        .mood-selector {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .mood-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid transparent;
-            border-radius: 50px;
-            padding: 8px 15px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .mood-btn:hover, .mood-btn.active {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
-            transform: scale(1.1);
-        }
-        
-        .symptom-tag {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 5px 12px;
-            border-radius: 20px;
-            margin: 3px;
-            display: inline-block;
-            font-size: 0.8em;
-        }
-        
-        .prediction-card {
-            background: var(--success-gradient);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            color: white;
-            margin: 20px 0;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-        
-        .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-        
-        .form-control, .form-select {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            border-radius: 10px;
-        }
-        
-        .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        
-        .form-control:focus, .form-select:focus {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-            color: white;
-            box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
-        }
-        
-        .nav-pills .nav-link {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            margin: 0 5px;
-            border-radius: 20px;
-        }
-        
-        .nav-pills .nav-link.active {
-            background: var(--secondary-gradient);
-        }
-        
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            margin: 20px 0;
-        }
-        
-        .calendar-day {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9em;
-        }
-        
-        .calendar-day:hover {
-            transform: scale(1.1);
-        }
-        
-        .period-day { background: #ff6b6b; }
-        .ovulation-day { background: #feca57; }
-        .fertile-day { background: #4ecdc4; }
-        .today { border: 2px solid white; }
     </style>
 </head>
 <body>
     <div class="hero-section">
         <div class="container">
-            <h1>🌙 Luna - Smart Period Tracker</h1>
-            <p class="lead">Your intelligent companion for menstrual health</p>
+            <h1>🌸 Period Tracker</h1>
+            <p class="lead">Track your menstrual cycle with ease and privacy</p>
         </div>
     </div>
 
-    <div class="container mt-4">
+    <div class="container mt-5">
         <!-- Authentication Section -->
-        <div class="row justify-content-center mb-4">
+        <div class="row justify-content-center mb-5">
             <div class="col-md-6">
-                <div class="glass-card">
+                <div class="card">
                     <div class="card-body text-center">
-                        <h5 class="card-title">🔐 Authentication</h5>
-                        <button id="googleSignIn" class="btn btn-gradient btn-lg w-100 mb-3">
+                        <h5 class="card-title">Authentication</h5>
+                        <button id="googleSignIn" class="btn google-btn btn-lg w-100 mb-3">
                             📱 Sign in with Google
-                        </button>
-                        <button id="emailSignIn" class="btn btn-outline-light w-100 mb-3">
-                            📧 Demo Sign-In
                         </button>
                         <button id="signOut" class="btn btn-outline-danger d-none">
                             🚪 Sign Out
@@ -218,314 +61,49 @@
             </div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <ul class="nav nav-pills justify-content-center mb-4" id="mainTabs" role="tablist">
-            <li class="nav-item">
-                <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#dashboard">📊 Dashboard</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#logData">📝 Log Data</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#calendar">📅 Calendar</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#insights">💡 Insights</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#wellness">🌱 Wellness</button>
-            </li>
-        </ul>
-
-        <!-- Tab Content -->
-        <div class="tab-content">
-            <!-- Dashboard Tab -->
-            <div class="tab-pane fade show active" id="dashboard">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="glass-card">
-                            <div class="card-body">
-                                <h5>🔮 Cycle Predictions</h5>
-                                <div id="predictions" class="prediction-card">
-                                    <div class="mb-2">Next Period: <strong id="nextPeriod">--</strong></div>
-                                    <div class="mb-2">Ovulation: <strong id="nextOvulation">--</strong></div>
-                                    <div>Current Phase: <strong id="currentPhase">--</strong></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="glass-card">
-                            <div class="card-body">
-                                <h5>📈 Cycle Stats</h5>
-                                <div class="stats-grid">
-                                    <div class="stat-card">
-                                        <div class="h4" id="avgCycleLength">--</div>
-                                        <small>Avg Cycle</small>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="h4" id="avgPeriodLength">--</div>
-                                        <small>Avg Period</small>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="h4" id="totalCycles">--</div>
-                                        <small>Total Cycles</small>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="h4" id="regularity">--</div>
-                                        <small>Regularity</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="glass-card">
-                            <div class="card-body">
-                                <h5>📊 Recent Activity</h5>
-                                <div id="recentActivity">
-                                    <p class="text-muted">Sign in to view your recent activity</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Log Data Tab -->
-            <div class="tab-pane fade" id="logData">
-                <div class="row justify-content-center">
-                    <div class="col-md-8">
-                        <div class="glass-card">
-                            <div class="card-body">
-                                <h5>📝 Log Your Data</h5>
-                                
-                                <!-- Period Form -->
-                                <form id="periodForm" class="mb-4">
-                                    <h6>🩸 Period Information</h6>
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <label class="form-label">Start Date</label>
-                                            <input type="date" class="form-control" id="startDate" required>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label">End Date (Optional)</label>
-                                            <input type="date" class="form-control" id="endDate">
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <label class="form-label">Flow Intensity</label>
-                                            <select class="form-select" id="flowIntensity">
-                                                <option value="">Select intensity</option>
-                                                <option value="light">Light</option>
-                                                <option value="medium">Medium</option>
-                                                <option value="heavy">Heavy</option>
-                                                <option value="very-heavy">Very Heavy</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label">Pain Level (1-10)</label>
-                                            <input type="range" class="form-range" id="painLevel" min="0" max="10" value="0">
-                                            <div class="text-center">
-                                                <span id="painValue">0</span>/10
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label class="form-label">Mood Today</label>
-                                        <div class="mood-selector">
-                                            <button type="button" class="mood-btn" data-mood="happy">😊 Happy</button>
-                                            <button type="button" class="mood-btn" data-mood="sad">😢 Sad</button>
-                                            <button type="button" class="mood-btn" data-mood="angry">😠 Angry</button>
-                                            <button type="button" class="mood-btn" data-mood="anxious">😰 Anxious</button>
-                                            <button type="button" class="mood-btn" data-mood="calm">😌 Calm</button>
-                                            <button type="button" class="mood-btn" data-mood="emotional">🥺 Emotional</button>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label class="form-label">Symptoms</label>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="cramps" value="cramps">
-                                                    <label class="form-check-label" for="cramps">Cramps</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="headache" value="headache">
-                                                    <label class="form-check-label" for="headache">Headache</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="bloating" value="bloating">
-                                                    <label class="form-check-label" for="bloating">Bloating</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="backache" value="backache">
-                                                    <label class="form-check-label" for="backache">Back Pain</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="fatigue" value="fatigue">
-                                                    <label class="form-check-label" for="fatigue">Fatigue</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="nausea" value="nausea">
-                                                    <label class="form-check-label" for="nausea">Nausea</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label class="form-label">Additional Notes</label>
-                                        <textarea class="form-control" id="notes" rows="3" placeholder="Any additional notes about your day..."></textarea>
-                                    </div>
-                                    
-                                    <button type="submit" class="btn btn-gradient w-100">💾 Save Entry</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Calendar Tab -->
-            <div class="tab-pane fade" id="calendar">
-                <div class="glass-card">
+        <!-- Period Logging Form -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-8">
+                <div class="card">
                     <div class="card-body">
-                        <h5>📅 Cycle Calendar</h5>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <button class="btn btn-outline-light" id="prevMonth">← Previous</button>
-                            <h4 id="currentMonth"></h4>
-                            <button class="btn btn-outline-light" id="nextMonth">Next →</button>
-                        </div>
-                        <div class="calendar-grid" id="calendarGrid">
-                            <!-- Calendar will be generated here -->
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-3 text-center">
-                                <div class="period-day d-inline-block" style="width: 20px; height: 20px; border-radius: 50%;"></div>
-                                <small class="ms-2">Period</small>
+                        <h5 class="card-title">📅 Log Your Period</h5>
+                        <form id="periodForm">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="startDate" class="form-label">Start Date</label>
+                                    <input type="date" class="form-control" id="startDate" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="endDate" class="form-label">End Date</label>
+                                    <input type="date" class="form-control" id="endDate">
+                                </div>
                             </div>
-                            <div class="col-md-3 text-center">
-                                <div class="ovulation-day d-inline-block" style="width: 20px; height: 20px; border-radius: 50%;"></div>
-                                <small class="ms-2">Ovulation</small>
+                            <div class="mb-3">
+                                <label for="symptoms" class="form-label">Symptoms (Optional)</label>
+                                <textarea class="form-control" id="symptoms" rows="3" placeholder="Cramps, headache, mood changes, etc."></textarea>
                             </div>
-                            <div class="col-md-3 text-center">
-                                <div class="fertile-day d-inline-block" style="width: 20px; height: 20px; border-radius: 50%;"></div>
-                                <small class="ms-2">Fertile</small>
-                            </div>
-                            <div class="col-md-3 text-center">
-                                <div style="width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; display: inline-block;"></div>
-                                <small class="ms-2">Today</small>
-                            </div>
-                        </div>
+                            <button type="submit" class="btn btn-primary w-100">📝 Log Period</button>
+                        </form>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Insights Tab -->
-            <div class="tab-pane fade" id="insights">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="glass-card">
-                            <div class="card-body">
-                                <h5>🔍 Pattern Analysis</h5>
-                                <div id="patternAnalysis">
-                                    <p>Sign in and log data to see patterns</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="glass-card">
-                            <div class="card-body">
-                                <h5>💡 Health Insights</h5>
-                                <div id="healthInsights">
-                                    <p>Personalized insights will appear here</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="glass-card">
-                            <div class="card-body">
-                                <h5>📈 Trend Charts</h5>
-                                <canvas id="trendChart" width="400" height="200"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Wellness Tab -->
-            <div class="tab-pane fade" id="wellness">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="glass-card">
-                            <div class="card-body text-center">
-                                <h5>🧘 Meditation</h5>
-                                <p>5-minute guided meditation for menstrual comfort</p>
-                                <button class="btn btn-gradient" id="startMeditation">Start Session</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="glass-card">
-                            <div class="card-body text-center">
-                                <h5>🏃‍♀️ Exercise</h5>
-                                <p>Cycle-friendly workout suggestions</p>
-                                <button class="btn btn-gradient" id="viewExercises">View Exercises</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="glass-card">
-                            <div class="card-body text-center">
-                                <h5>🍎 Nutrition</h5>
-                                <p>Nutrition tips for each cycle phase</p>
-                                <button class="btn btn-gradient" id="nutritionTips">Get Tips</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="glass-card">
-                            <div class="card-body">
-                                <h5>💊 Symptom Relief</h5>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <h6>🔥 For Cramps:</h6>
-                                        <ul>
-                                            <li>Apply heat to lower abdomen</li>
-                                            <li>Gentle stretching or yoga</li>
-                                            <li>Stay hydrated</li>
-                                            <li>Consider anti-inflammatory medication</li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h6>😴 For Fatigue:</h6>
-                                        <ul>
-                                            <li>Prioritize sleep (8+ hours)</li>
-                                            <li>Iron-rich foods</li>
-                                            <li>Light exercise</li>
-                                            <li>Limit caffeine</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
+        <!-- Cycle History -->
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">📊 Cycle History</h5>
+                        <ul id="cycleHistory" class="list-group list-group-flush">
+                            <li class="list-group-item text-muted">Sign in to view your cycle history</li>
+                        </ul>
+                        <button id="shareProfile" class="btn btn-outline-primary w-100 mb-3">
+                            🔗 Share Profile
+                        </button>
+                        <div id="shareLink" class="mt-2 d-none">
+                            <input type="text" class="form-control" id="generatedLink" readonly>
+                            <button class="btn btn-sm btn-primary mt-2" onclick="copyToClipboard()">📋 Copy Link</button>
                         </div>
                     </div>
                 </div>
@@ -537,7 +115,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-firestore-compat.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 
     <script>
         // Firebase Configuration
@@ -557,91 +134,72 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         let currentUser = null;
-        let currentDate = new Date();
-        let selectedMood = '';
-        let userData = [];
 
-        // Authentication
+        // Google Sign-In
         document.getElementById('googleSignIn').addEventListener('click', () => {
             const provider = new firebase.auth.GoogleAuthProvider();
+            provider.addScope('email');
+            provider.addScope('profile');
+            
             auth.signInWithPopup(provider)
                 .then((result) => {
                     currentUser = result.user;
+                    console.log('User signed in:', currentUser);
                     showNotification(`Welcome, ${currentUser.displayName}!`, 'success');
                     updateUI();
                 })
                 .catch((error) => {
-                    showNotification("Google Sign-In not enabled. Please enable it in Firebase Console.", 'error');
+                    console.error("Error signing in:", error);
+                    showNotification("Failed to sign in. Please try again.", 'error');
                 });
         });
 
-        document.getElementById('emailSignIn').addEventListener('click', () => {
-            const email = 'demo@example.com';
-            const password = 'demo123456';
-            
-            auth.signInWithEmailAndPassword(email, password)
-                .then((result) => {
-                    currentUser = result.user;
-                    showNotification(`Welcome, Demo User!`, 'success');
-                    updateUI();
-                })
-                .catch((error) => {
-                    if (error.code === 'auth/user-not-found') {
-                        auth.createUserWithEmailAndPassword(email, password)
-                            .then((result) => {
-                                currentUser = result.user;
-                                currentUser.updateProfile({ displayName: 'Demo User' });
-                                showNotification(`Demo account created!`, 'success');
-                                updateUI();
-                            })
-                            .catch(() => {
-                                showNotification("Please enable Email/Password auth in Firebase Console", 'error');
-                            });
-                    }
-                });
-        });
-
+        // Sign-Out
         document.getElementById('signOut').addEventListener('click', () => {
             auth.signOut()
                 .then(() => {
                     currentUser = null;
-                    showNotification('Signed out successfully', 'success');
+                    console.log('User signed out');
+                    showNotification('Successfully signed out', 'success');
                     updateUI();
                 })
                 .catch((error) => {
+                    console.error("Error signing out:", error);
                     showNotification("Error signing out", 'error');
                 });
         });
 
+        // Track Auth State Changes
         auth.onAuthStateChanged((user) => {
             currentUser = user;
             updateUI();
         });
 
-        // UI Updates
+        // Update UI Based on Auth State
         function updateUI() {
             const googleSignInBtn = document.getElementById('googleSignIn');
-            const emailSignInBtn = document.getElementById('emailSignIn');
             const signOutBtn = document.getElementById('signOut');
             const userInfo = document.getElementById('userInfo');
 
             if (currentUser) {
                 googleSignInBtn.classList.add('d-none');
-                emailSignInBtn.classList.add('d-none');
                 signOutBtn.classList.remove('d-none');
-                userInfo.innerHTML = `<small>Signed in as: ${currentUser.displayName || currentUser.email}</small>`;
-                loadUserData();
-                generateCalendar();
+                userInfo.innerHTML = `
+                    <div class="text-success">
+                        <small>Signed in as: ${currentUser.displayName}</small>
+                    </div>
+                `;
+                loadCycleHistory();
             } else {
                 googleSignInBtn.classList.remove('d-none');
-                emailSignInBtn.classList.remove('d-none');
                 signOutBtn.classList.add('d-none');
                 userInfo.innerHTML = '';
-                resetDashboard();
+                document.getElementById('cycleHistory').innerHTML = 
+                    '<li class="list-group-item text-muted">Sign in to view your cycle history</li>';
             }
         }
 
-        // Form Handling
+        // Log Period Data
         document.getElementById('periodForm').addEventListener('submit', (e) => {
             e.preventDefault();
             if (!currentUser) {
@@ -651,64 +209,235 @@
 
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
-            const flowIntensity = document.getElementById('flowIntensity').value;
-            const painLevel = document.getElementById('painLevel').value;
-            const notes = document.getElementById('notes').value;
-            
-            const symptoms = [];
-            document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
-                symptoms.push(checkbox.value);
-            });
+            const symptoms = document.getElementById('symptoms').value;
 
-            const entryData = {
+            if (!startDate) {
+                showNotification("Please enter a start date.", 'error');
+                return;
+            }
+
+            db.collection("periods").add({
                 userId: currentUser.uid,
-                startDate,
+                startDate: startDate,
                 endDate: endDate || null,
-                flowIntensity,
-                painLevel: parseInt(painLevel),
-                mood: selectedMood,
-                symptoms,
-                notes,
+                symptoms: symptoms || '',
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
-            db.collection("periods").add(entryData)
-                .then(() => {
-                    showNotification("Data logged successfully!", 'success');
-                    document.getElementById('periodForm').reset();
-                    selectedMood = '';
-                    document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
-                    loadUserData();
-                })
-                .catch((error) => {
-                    console.error("Error logging data:", error);
-                    showNotification("Error logging data", 'error');
-                });
-        });
-
-        // Mood Selection
-        document.querySelectorAll('.mood-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                selectedMood = btn.dataset.mood;
+            }).then(() => {
+                showNotification("Period logged successfully!", 'success');
+                document.getElementById('periodForm').reset();
+                loadCycleHistory();
+            }).catch((error) => {
+                console.error("Error logging period:", error);
+                showNotification("Error logging period. Please try again.", 'error');
             });
         });
 
-        // Pain Level Display
-        document.getElementById('painLevel').addEventListener('input', (e) => {
-            document.getElementById('painValue').textContent = e.target.value;
-        });
-
-        // Load User Data
-        function loadUserData() {
+        // Load Cycle History
+        function loadCycleHistory() {
             if (!currentUser) return;
+
+            const cycleHistory = document.getElementById('cycleHistory');
+            cycleHistory.innerHTML = '<li class="list-group-item">Loading...</li>';
 
             db.collection("periods")
                 .where("userId", "==", currentUser.uid)
                 .orderBy("timestamp", "desc")
                 .get()
                 .then((querySnapshot) => {
-                    userData = [];
-                    querySnapshot.forEach((
+                    cycleHistory.innerHTML = '';
+                    
+                    if (querySnapshot.empty) {
+                        cycleHistory.innerHTML = '<li class="list-group-item text-muted">No periods logged yet</li>';
+                        return;
+                    }
+
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item';
+                        
+                        const endDateText = data.endDate ? ` to ${data.endDate}` : ' (ongoing)';
+                        const symptomsText = data.symptoms ? `: ${data.symptoms}` : '';
+                        
+                        li.innerHTML = `
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong>${data.startDate}${endDateText}</strong>
+                                    <br>
+                                    <small class="text-muted">${symptomsText || 'No symptoms logged'}</small>
+                                </div>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deletePeriod('${doc.id}')">
+                                    🗑️
+                                </button>
+                            </div>
+                        `;
+                        cycleHistory.appendChild(li);
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error loading history:", error);
+                    cycleHistory.innerHTML = '<li class="list-group-item text-danger">Error loading history</li>';
+                });
+        }
+
+        // Delete Period Entry
+        function deletePeriod(docId) {
+            if (confirm('Are you sure you want to delete this period entry?')) {
+                db.collection("periods").doc(docId).delete()
+                    .then(() => {
+                        showNotification("Period entry deleted", 'success');
+                        loadCycleHistory();
+                    })
+                    .catch((error) => {
+                        console.error("Error deleting period:", error);
+                        showNotification("Error deleting entry", 'error');
+                    });
+            }
+        }
+
+        // Show Notification
+        function showNotification(message, type) {
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+            alertDiv.style.top = '20px';
+            alertDiv.style.right = '20px';
+            alertDiv.style.zIndex = '9999';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 3000);
+        }
+
+        // Set today's date as default for start date
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').value = today;
+        });
+
+        // Add this to your existing script
+        document.getElementById('shareProfile').addEventListener('click', () => {
+            if (!currentUser) {
+                showNotification("Please sign in first.", 'error');
+                return;
+            }
+
+            // Generate a unique token for the shareable link
+            const shareToken = generateToken();
+            const shareLink = `${window.location.origin}${window.location.pathname}?shareToken=${shareToken}&userId=${currentUser.uid}`;
+
+            // Store the share token in Firestore
+            db.collection("shareTokens").doc(shareToken).set({
+                userId: currentUser.uid,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                document.getElementById('generatedLink').value = shareLink;
+                document.getElementById('shareLink').classList.remove('d-none');
+            }).catch((error) => {
+                console.error("Error generating share link:", error);
+                showNotification("Error generating share link.", 'error');
+            });
+        });
+
+        // Function to generate a unique token
+        function generateToken() {
+            return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        }
+
+        // Function to copy the link to clipboard
+        function copyToClipboard() {
+            const linkInput = document.getElementById('generatedLink');
+            linkInput.select();
+            document.execCommand('copy');
+            showNotification("Link copied to clipboard!", 'success');
+        }
+
+        // Check for share token in URL when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const shareToken = urlParams.get('shareToken');
+            const userId = urlParams.get('userId');
+
+            if (shareToken && userId) {
+                // Verify the share token and load the shared profile
+                verifyShareToken(shareToken, userId);
+            }
+        });
+
+        // Function to verify the share token
+        function verifyShareToken(shareToken, userId) {
+            db.collection("shareTokens").doc(shareToken).get()
+                .then((doc) => {
+                    if (doc.exists && doc.data().userId === userId) {
+                        // Load the shared profile (read-only)
+                        loadSharedProfile(userId);
+                    } else {
+                        showNotification("Invalid or expired share link.", 'error');
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error verifying share token:", error);
+                    showNotification("Error verifying share link.", 'error');
+                });
+        }
+
+        // Function to load the shared profile (read-only)
+        function loadSharedProfile(userId) {
+            // Ensure the recipient is signed in
+            if (!currentUser) {
+                showNotification("Please sign in to view this profile.", 'error');
+                return;
+            }
+
+            // Load the shared profile data (read-only)
+            db.collection("periods")
+                .where("userId", "==", userId)
+                .orderBy("timestamp", "desc")
+                .get()
+                .then((querySnapshot) => {
+                    const cycleHistory = document.getElementById('cycleHistory');
+                    cycleHistory.innerHTML = '';
+
+                    if (querySnapshot.empty) {
+                        cycleHistory.innerHTML = '<li class="list-group-item text-muted">No periods logged yet</li>';
+                        return;
+                    }
+
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item';
+                        
+                        const endDateText = data.endDate ? ` to ${data.endDate}` : ' (ongoing)';
+                        const symptomsText = data.symptoms ? `: ${data.symptoms}` : '';
+                        
+                        li.innerHTML = `
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong>${data.startDate}${endDateText}</strong>
+                                    <br>
+                                    <small class="text-muted">${symptomsText || 'No symptoms logged'}</small>
+                                </div>
+                            </div>
+                        `;
+                        cycleHistory.appendChild(li);
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error loading shared profile:", error);
+                    cycleHistory.innerHTML = '<li class="list-group-item text-danger">Error loading shared profile</li>';
+                });
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
