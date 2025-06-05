@@ -17,10 +17,9 @@ const firebaseConfig = {
     appId: "1:456049902625:web:7f7cfe094ac660d5230f60",
     measurementId: "G-BKTH5DMHGB"
 };
-firebase.initializeApp(firebaseConfig);
 
-const auth = firebase.auth();
-const db = firebase.firestore();
+const app = firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth(app);
 let currentUser = null;
 
 // Google Sign-In
