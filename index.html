@@ -337,16 +337,23 @@
         function loadCycleHistory() {
             if (!currentUser) return;
 
-            // Initialize DataTable
+            // Destroy existing DataTable (if any) to avoid duplicates
+            if ($.fn.DataTable.isDataTable('#cycleHistoryTable')) {
+                $('#cycleHistoryTable').DataTable().destroy();
+            }
+
+            // Initialize DataTable with proper AJAX handling
             $('#cycleHistoryTable').DataTable({
                 ajax: {
-                    url: '', // No URL needed since we're using Firestore
-                    dataSrc: '',
-                    data: async function (d) {
+                    url: '', // No URL needed for Firestore
+                    dataSrc: '', // Treat the returned data as an array directly
+                    data: async function () {
                         const querySnapshot = await db.collection("periods")
                             .where("userId", "==", currentUser.uid)
                             .orderBy("timestamp", "desc")
                             .get();
+                        
+                        // Format the data for DataTables
                         return querySnapshot.docs.map(doc => {
                             const data = doc.data();
                             return {
