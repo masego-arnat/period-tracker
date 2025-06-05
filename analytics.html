@@ -86,9 +86,6 @@
 
         // Function to load analytics
         function loadAnalytics() {
-            const analyticsContent = document.getElementById('analyticsContent');
-            analyticsContent.innerHTML = '<p>Loading analytics...</p>';
-
             // Fetch cycle data
             db.collection("periods")
                 .where("userId", "==", currentUser.uid)
@@ -96,7 +93,7 @@
                 .get()
                 .then((querySnapshot) => {
                     if (querySnapshot.empty) {
-                        analyticsContent.innerHTML = '<p class="text-muted">No data available for analytics.</p>';
+                        alert("No data available for analytics.");
                         return;
                     }
 
@@ -126,7 +123,7 @@
                 })
                 .catch((error) => {
                     console.error("Error loading analytics:", error);
-                    analyticsContent.innerHTML = '<p class="text-danger">Error loading analytics.</p>';
+                    alert("Error loading analytics.");
                 });
         }
 
