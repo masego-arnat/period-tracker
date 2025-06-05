@@ -121,9 +121,9 @@
                         <div id="analyticsContent">
                             <p class="text-muted">Sign in to view your cycle analytics.</p>
                         </div>
-                        <button id="loadAnalytics" class="btn btn-primary w-100 mt-3">
+                        <a href="analytics.html" class="btn btn-primary w-100 mt-3">
                             🔍 View Analytics
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -536,127 +536,6 @@
             document.execCommand('copy');
             showNotification("Link copied to clipboard!", 'success');
         }
-
-        // Function to load analytics
-        function loadAnalytics() {
-            if (!currentUser) {
-                showNotification("Please sign in first.", 'error');
-                return;
-            }
-
-            const analyticsContent = document.getElementById('analyticsContent');
-            analyticsContent.innerHTML = '<p>Loading analytics...</p>';
-
-            // Fetch cycle data
-            db.collection("periods")
-                .where("userId", "==", currentUser.uid)
-                .orderBy("timestamp", "desc")
-                .get()
-                .then((querySnapshot) => {
-                    if (querySnapshot.empty) {
-                        analyticsContent.innerHTML = '<p class="text-muted">No data available for analytics.</p>';
-                        return;
-                    }
-
-                    // Process data for analytics
-                    const periods = [];
-                    querySnapshot.forEach((doc) => {
-                        const data = doc.data();
-                        periods.push({
-                            startDate: new Date(data.startDate),
-                            endDate: data.endDate ? new Date(data.endDate) : null,
-                            symptoms: data.symptoms || 'None'
-                        });
-                    });
-
-                    // Calculate cycle lengths (if endDate exists)
-                    const cycleLengths = [];
-                    for (let i = 0; i < periods.length - 1; i++) {
-                        if (periods[i].endDate) {
-                            const diffTime = Math.abs(periods[i].startDate - periods[i + 1].startDate);
-                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                            cycleLengths.push(diffDays);
-                        }
-                    }
-
-                    // Render analytics
-                    renderAnalytics(periods, cycleLengths);
-                })
-                .catch((error) => {
-                    console.error("Error loading analytics:", error);
-                    analyticsContent.innerHTML = '<p class="text-danger">Error loading analytics.</p>';
-                });
-        }
-
-        // Function to render analytics (using Chart.js)
-        function renderAnalytics(periods, cycleLengths) {
-            const analyticsContent = document.getElementById('analyticsContent');
-            analyticsContent.innerHTML = `
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6>Cycle Length Trends</h6>
-                        <canvas id="cycleLengthChart"></canvas>
-                    </div>
-                    <div class="col-md-6">
-                        <h6>Symptoms Frequency</h6>
-                        <canvas id="symptomsChart"></canvas>
-                    </div>
-                </div>
-            `;
-
-            // Chart 1: Cycle Length Trends
-            const cycleLengthCtx = document.getElementById('cycleLengthChart').getContext('2d');
-            new Chart(cycleLengthCtx, {
-                type: 'line',
-                data: {
-                    labels: cycleLengths.map((_, i) => `Cycle ${i + 1}`),
-                    datasets: [{
-                        label: 'Cycle Length (Days)',
-                        data: cycleLengths,
-                        borderColor: '#ff6b9d',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: false
-                        }
-                    }
-                }
-            });
-
-            // Chart 2: Symptoms Frequency (simplified example)
-            const symptoms = {};
-            periods.forEach(period => {
-                if (period.symptoms !== 'None') {
-                    period.symptoms.split(',').forEach(symptom => {
-                        symptom = symptom.trim().toLowerCase();
-                        symptoms[symptom] = (symptoms[symptom] || 0) + 1;
-                    });
-                }
-            });
-
-            const symptomsCtx = document.getElementById('symptomsChart').getContext('2d');
-            new Chart(symptomsCtx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(symptoms),
-                    datasets: [{
-                        label: 'Symptom Frequency',
-                        data: Object.values(symptoms),
-                        backgroundColor: '#c44569'
-                    }]
-                },
-                options: {
-                    responsive: true
-                }
-            });
-        }
-
-        // Event listener for the analytics button
-        document.getElementById('loadAnalytics').addEventListener('click', loadAnalytics);
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics | Period Tracker</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        .card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <div class="container">
+            <h1>📈 Analytics</h1>
+            <p class="lead">View your cycle trends and symptoms frequency</p>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Cycle Length Trends</h5>
+                        <canvas id="cycleLengthChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Symptoms Frequency</h5>
+                        <canvas id="symptomsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-firestore-compat.min.js"></script>
+
+    <script>
+        // Firebase Configuration (same as in index.html)
+        const firebaseConfig = {
+            apiKey: "AIzaSyD2lun6Fle6g_No3vd50Ser6lp4l7yxxXw",
+            authDomain: "movieapp-d4e7b.firebaseapp.com",
+            databaseURL: "https://movieapp-d4e7b-default-rtdb.firebaseio.com",
+            projectId: "movieapp-d4e7b",
+            storageBucket: "movieapp-d4e7b.appspot.com",
+            messagingSenderId: "456049902625",
+            appId: "1:456049902625:web:7f7cfe094ac660d5230f60",
+            measurementId: "G-BKTH5DMHGB"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        let currentUser = null;
+
+        // Track Auth State Changes
+        auth.onAuthStateChanged((user) => {
+            currentUser = user;
+            if (currentUser) {
+                loadAnalytics();
+            } else {
+                window.location.href = "index.html";
+            }
+        });
+
+        // Function to load analytics
+        function loadAnalytics() {
+            const analyticsContent = document.getElementById('analyticsContent');
+            analyticsContent.innerHTML = '<p>Loading analytics...</p>';
+
+            // Fetch cycle data
+            db.collection("periods")
+                .where("userId", "==", currentUser.uid)
+                .orderBy("timestamp", "desc")
+                .get()
+                .then((querySnapshot) => {
+                    if (querySnapshot.empty) {
+                        analyticsContent.innerHTML = '<p class="text-muted">No data available for analytics.</p>';
+                        return;
+                    }
+
+                    // Process data for analytics
+                    const periods = [];
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        periods.push({
+                            startDate: new Date(data.startDate),
+                            endDate: data.endDate ? new Date(data.endDate) : null,
+                            symptoms: data.symptoms || 'None'
+                        });
+                    });
+
+                    // Calculate cycle lengths (if endDate exists)
+                    const cycleLengths = [];
+                    for (let i = 0; i < periods.length - 1; i++) {
+                        if (periods[i].endDate) {
+                            const diffTime = Math.abs(periods[i].startDate - periods[i + 1].startDate);
+                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                            cycleLengths.push(diffDays);
+                        }
+                    }
+
+                    // Render analytics
+                    renderAnalytics(periods, cycleLengths);
+                })
+                .catch((error) => {
+                    console.error("Error loading analytics:", error);
+                    analyticsContent.innerHTML = '<p class="text-danger">Error loading analytics.</p>';
+                });
+        }
+
+        // Function to render analytics (using Chart.js)
+        function renderAnalytics(periods, cycleLengths) {
+            // Chart 1: Cycle Length Trends
+            const cycleLengthCtx = document.getElementById('cycleLengthChart').getContext('2d');
+            new Chart(cycleLengthCtx, {
+                type: 'line',
+                data: {
+                    labels: cycleLengths.map((_, i) => `Cycle ${i + 1}`),
+                    datasets: [{
+                        label: 'Cycle Length (Days)',
+                        data: cycleLengths,
+                        borderColor: '#ff6b9d',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+
+            // Chart 2: Symptoms Frequency (simplified example)
+            const symptoms = {};
+            periods.forEach(period => {
+                if (period.symptoms !== 'None') {
+                    period.symptoms.split(',').forEach(symptom => {
+                        symptom = symptom.trim().toLowerCase();
+                        symptoms[symptom] = (symptoms[symptom] || 0) + 1;
+                    });
+                }
+            });
+
+            const symptomsCtx = document.getElementById('symptomsChart').getContext('2d');
+            new Chart(symptomsCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(symptoms),
+                    datasets: [{
+                        label: 'Symptom Frequency',
+                        data: Object.values(symptoms),
+                        backgroundColor: '#c44569'
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
