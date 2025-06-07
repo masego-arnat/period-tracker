@@ -98,8 +98,49 @@
                                 <textarea class="form-control" id="symptoms" rows="3"
                                     placeholder="Cramps, headache, mood changes, etc."></textarea>
                             </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="flowIntensity" class="form-label">Flow Intensity</label>
+                                    <select class="form-select" id="flowIntensity">
+                                        <option value="light">Light</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="heavy">Heavy</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="mood" class="form-label">Mood</label>
+                                    <select class="form-select" id="mood">
+                                        <option value="happy">😊 Happy</option>
+                                        <option value="neutral">😐 Neutral</option>
+                                        <option value="sad">😢 Sad</option>
+                                        <option value="irritable">😠 Irritable</option>
+                                        <option value="anxious">😰 Anxious</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="medications" class="form-label">Medications (Optional)</label>
+                                <input type="text" class="form-control" id="medications" placeholder="e.g., Ibuprofen, Birth Control">
+                            </div>
                             <button type="submit" class="btn btn-primary w-100">📝 Log Period</button>
                         </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add this before the Cycle History section -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">📅 Calendar View</h5>
+                        <div id="calendar" class="mt-3"></div>
+                        <div class="mt-3">
+                            <button class="btn btn-outline-primary" onclick="syncWithCalendar()">
+                                📱 Sync with Calendar
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -131,6 +172,94 @@
                             <input type="text" class="form-control" id="generatedLink" readonly>
                             <button class="btn btn-sm btn-primary mt-2" onclick="copyToClipboard()">📋 Copy
                                 Link</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add this before the Health Insights section -->
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">🔔 Reminders & Notifications</h5>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="enableReminders">
+                                <label class="form-check-label" for="enableReminders">Enable Reminders</label>
+                            </div>
+                        </div>
+                        <div id="reminderSettings" class="d-none">
+                            <div class="mb-3">
+                                <label class="form-label">Remind me before period starts</label>
+                                <select class="form-select" id="reminderDays">
+                                    <option value="1">1 day before</option>
+                                    <option value="2">2 days before</option>
+                                    <option value="3">3 days before</option>
+                                    <option value="7">1 week before</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Notification Time</label>
+                                <input type="time" class="form-control" id="reminderTime" value="09:00">
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="remindEndDate">
+                                    <label class="form-check-label" for="remindEndDate">
+                                        Remind me to log end date
+                                    </label>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="saveReminderSettings()">Save Settings</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add this before the Analytics section -->
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">💡 Health Insights</h5>
+                        <div id="healthInsights" class="mt-3">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-subtitle mb-2 text-muted">Cycle Length</h6>
+                                            <p class="card-text" id="cycleLength">Calculating...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-subtitle mb-2 text-muted">Period Duration</h6>
+                                            <p class="card-text" id="periodDuration">Calculating...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-subtitle mb-2 text-muted">Next Period Prediction</h6>
+                                            <p class="card-text" id="nextPeriodPrediction">Calculating...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-subtitle mb-2 text-muted">Common Symptoms</h6>
+                                            <p class="card-text" id="commonSymptoms">Calculating...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -304,6 +433,8 @@
                 `;
                 loadCycleHistory();
                 analyticsContent.innerHTML = '<p>Click "View Analytics" to see your cycle trends.</p>';
+                initializeCalendar();
+                loadReminderSettings();
             } else {
                 googleSignInBtn.classList.remove('d-none');
                 signOutBtn.classList.add('d-none');
@@ -324,6 +455,9 @@
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
             const symptoms = document.getElementById('symptoms').value;
+            const flowIntensity = document.getElementById('flowIntensity').value;
+            const mood = document.getElementById('mood').value;
+            const medications = document.getElementById('medications').value;
 
             if (!startDate) {
                 showNotification("Please enter a start date.", 'error');
@@ -335,11 +469,17 @@
                 startDate: startDate,
                 endDate: endDate || null,
                 symptoms: symptoms || '',
+                flowIntensity: flowIntensity,
+                mood: mood,
+                medications: medications || '',
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             }).then(() => {
                 showNotification("Period logged successfully!", 'success');
                 document.getElementById('periodForm').reset();
                 loadCycleHistory();
+                if (calendar) {
+                    calendar.refetchEvents();
+                }
             }).catch((error) => {
                 console.error("Error logging period:", error);
                 showNotification("Error logging period. Please try again.", 'error');
@@ -349,8 +489,6 @@
         // Load Cycle History
         function loadCycleHistory() {
             if (!currentUser) return;
-
-
 
             $('#cycleHistoryTable').DataTable({
                 ajax: function (data, callback, settings) {
@@ -393,51 +531,7 @@
                 destroy: true
             });
 
-
-            // // Destroy existing DataTable (if any) to avoid duplicates
-            // if ($.fn.DataTable.isDataTable('#cycleHistoryTable')) {
-            //     $('#cycleHistoryTable').DataTable().destroy();
-            // }
-
-            // // Initialize DataTable with proper AJAX handling
-            // $('#cycleHistoryTable').DataTable({
-            //     ajax: {
-            //         // url: '', 
-            //         // dataSrc: '', 
-            //         data: async function () {
-            //             const querySnapshot = await db.collection("periods")
-            //                 .where("userId", "==", currentUser.uid)
-            //                 .orderBy("timestamp", "desc")
-            //                 .get();
-
-            //             // Format the data for DataTables
-            //             return querySnapshot.docs.map(doc => {
-            //                 const data = doc.data();
-            //                 return {
-            //                     startDate: data.startDate,
-            //                     endDate: data.endDate || 'Ongoing',
-            //                     symptoms: data.symptoms || 'None',
-            //                     actions: `
-            //                         <button class="btn btn-sm btn-outline-primary me-2" onclick="openEditModal('${doc.id}', '${data.startDate}', '${data.endDate || ''}', '${data.symptoms || ''}')">
-            //                             ✏️ Edit
-            //                         </button>
-            //                         <button class="btn btn-sm btn-outline-danger" onclick="deletePeriod('${doc.id}')">
-            //                             🗑️ Delete
-            //                         </button>
-            //                     `
-            //                 };
-            //             });
-            //         }
-            //     },
-            //     columns: [
-            //         { data: 'startDate' },
-            //         { data: 'endDate' },
-            //         { data: 'symptoms' },
-            //         { data: 'actions', orderable: false }
-            //     ],
-            //     responsive: true,
-            //     destroy: true 
-            // });
+            calculateHealthInsights();
         }
 
         // Delete Period Entry
@@ -704,10 +798,243 @@
                     saveButton.innerHTML = 'Save Changes';
                 });
         }
+
+        // Add this to your existing script
+        let calendar = null;
+
+        function initializeCalendar() {
+            const calendarEl = document.getElementById('calendar');
+            if (!calendarEl) return;
+
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek'
+                },
+                events: function(info, successCallback, failureCallback) {
+                    if (!currentUser) {
+                        successCallback([]);
+                        return;
+                    }
+
+                    db.collection("periods")
+                        .where("userId", "==", currentUser.uid)
+                        .get()
+                        .then(querySnapshot => {
+                            const events = querySnapshot.docs.map(doc => {
+                                const data = doc.data();
+                                return {
+                                    title: 'Period',
+                                    start: data.startDate,
+                                    end: data.endDate || data.startDate,
+                                    backgroundColor: '#ff6b9d',
+                                    borderColor: '#c44569'
+                                };
+                            });
+                            successCallback(events);
+                        })
+                        .catch(error => {
+                            console.error("Error fetching calendar events:", error);
+                            failureCallback(error);
+                        });
+                }
+            });
+
+            calendar.render();
+        }
+
+        function syncWithCalendar() {
+            if (!currentUser) {
+                showNotification("Please sign in first.", 'error');
+                return;
+            }
+
+            // Here you would implement calendar sync logic
+            // This is a placeholder for the actual implementation
+            showNotification("Calendar sync feature coming soon!", 'success');
+        }
+
+        // Add this to your existing script
+        function calculateHealthInsights() {
+            if (!currentUser) return;
+
+            db.collection("periods")
+                .where("userId", "==", currentUser.uid)
+                .orderBy("timestamp", "desc")
+                .get()
+                .then(querySnapshot => {
+                    const periods = querySnapshot.docs.map(doc => doc.data());
+                    
+                    if (periods.length < 2) {
+                        document.getElementById('cycleLength').textContent = 'Need more data';
+                        document.getElementById('periodDuration').textContent = 'Need more data';
+                        document.getElementById('nextPeriodPrediction').textContent = 'Need more data';
+                        document.getElementById('commonSymptoms').textContent = 'Need more data';
+                        return;
+                    }
+
+                    // Calculate cycle length
+                    const cycleLengths = [];
+                    for (let i = 0; i < periods.length - 1; i++) {
+                        const currentStart = new Date(periods[i].startDate);
+                        const nextStart = new Date(periods[i + 1].startDate);
+                        const diffDays = Math.round((currentStart - nextStart) / (1000 * 60 * 60 * 24));
+                        cycleLengths.push(Math.abs(diffDays));
+                    }
+                    const avgCycleLength = Math.round(cycleLengths.reduce((a, b) => a + b, 0) / cycleLengths.length);
+                    document.getElementById('cycleLength').textContent = `${avgCycleLength} days`;
+
+                    // Calculate period duration
+                    const durations = periods.map(period => {
+                        if (!period.endDate) return 0;
+                        const start = new Date(period.startDate);
+                        const end = new Date(period.endDate);
+                        return Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                    }).filter(d => d > 0);
+                    const avgDuration = Math.round(durations.reduce((a, b) => a + b, 0) / durations.length);
+                    document.getElementById('periodDuration').textContent = `${avgDuration} days`;
+
+                    // Predict next period
+                    const lastPeriod = new Date(periods[0].startDate);
+                    const nextPeriod = new Date(lastPeriod);
+                    nextPeriod.setDate(lastPeriod.getDate() + avgCycleLength);
+                    document.getElementById('nextPeriodPrediction').textContent = 
+                        `Expected around ${nextPeriod.toLocaleDateString()}`;
+
+                    // Analyze common symptoms
+                    const symptoms = periods
+                        .map(p => p.symptoms)
+                        .filter(s => s)
+                        .join(', ')
+                        .toLowerCase()
+                        .split(/[,\s]+/);
+                    
+                    const symptomCounts = {};
+                    symptoms.forEach(symptom => {
+                        if (symptom) {
+                            symptomCounts[symptom] = (symptomCounts[symptom] || 0) + 1;
+                        }
+                    });
+
+                    const commonSymptoms = Object.entries(symptomCounts)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 3)
+                        .map(([symptom, count]) => `${symptom} (${count} times)`)
+                        .join(', ');
+
+                    document.getElementById('commonSymptoms').textContent = 
+                        commonSymptoms || 'No symptoms recorded';
+                })
+                .catch(error => {
+                    console.error("Error calculating health insights:", error);
+                });
+        }
+
+        // Add this to your existing script
+        document.getElementById('enableReminders').addEventListener('change', function() {
+            const reminderSettings = document.getElementById('reminderSettings');
+            if (this.checked) {
+                reminderSettings.classList.remove('d-none');
+                // Request notification permission
+                if (Notification.permission !== 'granted') {
+                    Notification.requestPermission();
+                }
+            } else {
+                reminderSettings.classList.add('d-none');
+            }
+        });
+
+        function saveReminderSettings() {
+            if (!currentUser) {
+                showNotification("Please sign in first.", 'error');
+                return;
+            }
+
+            const settings = {
+                enabled: document.getElementById('enableReminders').checked,
+                daysBefore: document.getElementById('reminderDays').value,
+                reminderTime: document.getElementById('reminderTime').value,
+                remindEndDate: document.getElementById('remindEndDate').checked
+            };
+
+            db.collection("users").doc(currentUser.uid).set({
+                reminderSettings: settings
+            }, { merge: true })
+            .then(() => {
+                showNotification("Reminder settings saved!", 'success');
+                scheduleReminders(settings);
+            })
+            .catch(error => {
+                console.error("Error saving reminder settings:", error);
+                showNotification("Error saving settings", 'error');
+            });
+        }
+
+        function scheduleReminders(settings) {
+            if (!settings.enabled) return;
+
+            // Clear existing reminders
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.ready.then(registration => {
+                    registration.getNotifications().then(notifications => {
+                        notifications.forEach(notification => notification.close());
+                    });
+                });
+            }
+
+            // Schedule new reminders based on predictions
+            const nextPeriod = document.getElementById('nextPeriodPrediction').textContent;
+            if (nextPeriod && nextPeriod !== 'Need more data') {
+                const predictedDate = new Date(nextPeriod.split('around ')[1]);
+                const reminderDate = new Date(predictedDate);
+                reminderDate.setDate(predictedDate.getDate() - parseInt(settings.daysBefore));
+
+                const [hours, minutes] = settings.reminderTime.split(':');
+                reminderDate.setHours(parseInt(hours), parseInt(minutes), 0);
+
+                if (reminderDate > new Date()) {
+                    const timeUntilReminder = reminderDate.getTime() - new Date().getTime();
+                    setTimeout(() => {
+                        if (Notification.permission === 'granted') {
+                            new Notification('Period Reminder', {
+                                body: 'Your period is expected to start soon. Don\'t forget to prepare!',
+                                icon: '🌸'
+                            });
+                        }
+                    }, timeUntilReminder);
+                }
+            }
+        }
+
+        // Load reminder settings when user signs in
+        function loadReminderSettings() {
+            if (!currentUser) return;
+
+            db.collection("users").doc(currentUser.uid).get()
+                .then(doc => {
+                    if (doc.exists && doc.data().reminderSettings) {
+                        const settings = doc.data().reminderSettings;
+                        document.getElementById('enableReminders').checked = settings.enabled;
+                        if (settings.enabled) {
+                            document.getElementById('reminderSettings').classList.remove('d-none');
+                            document.getElementById('reminderDays').value = settings.daysBefore;
+                            document.getElementById('reminderTime').value = settings.reminderTime;
+                            document.getElementById('remindEndDate').checked = settings.remindEndDate;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error("Error loading reminder settings:", error);
+                });
+        }
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/v/dt/dt-2.3.1/r-3.0.4/datatables.js" integrity="sha384-wdjpQr6s1e9JSYz1hVdUHZ5oIKygjAkbkjxNwEJfBxfxTGzmG8MxiZHl2vwuOxYg" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
 
 </body>
 
