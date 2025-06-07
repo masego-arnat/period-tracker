@@ -139,3 +139,5 @@ function loadCycleHistory() {
             console.error("Error loading history:", error);
         });
 } 
+
+
