@@ -4,9 +4,16 @@ import { initializeCalendar } from './components/calendar.js';
 import { initializeReminders } from './components/reminders.js';
 
 // Initialize all components when the DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    initializeAuth();
-    initializePeriodTracker();
-    initializeCalendar();
-    initializeReminders();
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        // Initialize auth first since other components depend on it
+        await initializeAuth();
+        
+        // Initialize other components
+        initializePeriodTracker();
+        initializeCalendar();
+        initializeReminders();
+    } catch (error) {
+        console.error('Error initializing application:', error);
+    }
 }); 

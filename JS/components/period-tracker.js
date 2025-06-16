@@ -1,6 +1,7 @@
 import { db } from '../services/firebase.js';
 import { showNotification } from '../utils/notifications.js';
 import { getCurrentUser } from './auth.js';
+import { calculateHealthInsights } from './health-insights.js';
 
 export function initializePeriodTracker() {
     document.getElementById('periodForm').addEventListener('submit', handlePeriodSubmit);
@@ -41,9 +42,6 @@ function handlePeriodSubmit(e) {
         showNotification("Period logged successfully!", 'success');
         document.getElementById('periodForm').reset();
         loadCycleHistory();
-        if (calendar) {
-            calendar.refetchEvents();
-        }
     }).catch((error) => {
         console.error("Error logging period:", error);
         showNotification("Error logging period. Please try again.", 'error');

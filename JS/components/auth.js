@@ -1,5 +1,8 @@
 import { auth } from '../services/firebase.js';
 import { showNotification } from '../utils/notifications.js';
+import { loadCycleHistory } from './period-tracker.js';
+import { initializeCalendar } from './calendar.js';
+import { loadReminderSettings } from './reminders.js';
 
 let currentUser = null;
 
