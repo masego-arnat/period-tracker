@@ -12,6 +12,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <link href="https://cdn.datatables.net/v/dt/dt-2.3.1/r-3.0.4/datatables.css" rel="stylesheet" integrity="sha384-ASfEqYL6RtWsdGvab58itBscnZN3SfUdRbkWrVc4/rOKlz8ep5Q/7seFu2r1kIlD" crossorigin="anonymous">
+    
+    <!-- SlimSelect for better mobile dropdown experience -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slim-select@2.8.2/dist/slimselect.css">
+    <script src="https://cdn.jsdelivr.net/npm/slim-select@2.8.2/dist/slimselect.min.js"></script>
  
   
   <style>
@@ -204,6 +208,105 @@
             cursor: pointer;
             font-size: 0.9rem;
         }
+
+        /* SlimSelect Custom Styling */
+        .ss-main {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .ss-main:focus-within {
+            border-color: #ff6b9d;
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 157, 0.25);
+        }
+
+        .ss-single-selected {
+            padding: 8px 12px;
+            min-height: 38px;
+        }
+
+        .ss-multi-selected {
+            padding: 4px 8px;
+            min-height: 38px;
+        }
+
+        .ss-option {
+            padding: 8px 12px;
+            transition: all 0.2s ease;
+        }
+
+        .ss-option:hover {
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            color: white;
+        }
+
+        .ss-option.ss-option-selected {
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            color: white;
+        }
+
+        .ss-option.ss-option-disabled {
+            opacity: 0.5;
+        }
+
+        .ss-content {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .ss-search {
+            padding: 8px 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .ss-search input {
+            border: none;
+            outline: none;
+            width: 100%;
+            padding: 4px 0;
+        }
+
+        .ss-search input::placeholder {
+            color: #6c757d;
+        }
+
+        .ss-tag {
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            color: white;
+            border-radius: 4px;
+            padding: 2px 6px;
+            margin: 2px;
+            font-size: 0.8rem;
+        }
+
+        .ss-tag .ss-tag-remove {
+            color: white;
+            margin-left: 4px;
+            cursor: pointer;
+        }
+
+        .ss-tag .ss-tag-remove:hover {
+            opacity: 0.8;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .ss-content {
+                max-height: 200px;
+            }
+            
+            .ss-option {
+                padding: 12px 16px;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+            
+            .ss-search input {
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 8px 0;
+            }
+        }
     </style>
 </head>
 
@@ -252,8 +355,8 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="mood" class="form-label">How are you feeling? (Hold Ctrl/Cmd to select multiple)</label>
-                                <select class="form-select" id="mood" multiple size="6">
+                                <label for="mood" class="form-label">How are you feeling? (Select multiple moods)</label>
+                                <select class="form-select" id="mood">
                                     <option value="Happy">😊 Happy</option>
                                     <option value="Calm">😌 Calm</option>
                                     <option value="Energetic">⚡ Energetic</option>
@@ -427,8 +530,8 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="editMood" class="form-label">How were you feeling? (Hold Ctrl/Cmd to select multiple)</label>
-                            <select class="form-select" id="editMood" multiple size="6">
+                            <label for="editMood" class="form-label">How were you feeling? (Select multiple moods)</label>
+                            <select class="form-select" id="editMood">
                                 <option value="Happy">😊 Happy</option>
                                 <option value="Calm">😌 Calm</option>
                                 <option value="Energetic">⚡ Energetic</option>
@@ -561,9 +664,8 @@
             const endDate = document.getElementById('endDate').value;
             const symptoms = document.getElementById('symptoms').value;
             
-            // Collect multiple mood selections from dropdown
-            const moodSelect = document.getElementById('mood');
-            const selectedMoods = Array.from(moodSelect.selectedOptions).map(option => option.value);
+            // Collect multiple mood selections from SlimSelect
+            const selectedMoods = moodSelect.get();
             const mood = selectedMoods.join(', ');
 
             if (!startDate) {
@@ -742,7 +844,51 @@
             
             // Initialize calendar
             initializeCalendar();
+            
+            // Initialize SlimSelect for mood dropdowns
+            initializeSlimSelect();
         });
+
+        // Initialize SlimSelect for better mobile experience
+        let moodSelect, editMoodSelect;
+        
+        function initializeSlimSelect() {
+            // Initialize main mood dropdown
+            moodSelect = new SlimSelect('#mood', {
+                multiple: true,
+                placeholder: 'Select your moods...',
+                allowDeselect: true,
+                closeOnSelect: false,
+                showSearch: true,
+                searchPlaceholder: 'Search moods...',
+                searchText: 'No moods found',
+                searchHighlight: true,
+                showOptionTooltips: true,
+                plugins: {
+                    remove_button: {
+                        label: '×'
+                    }
+                }
+            });
+
+            // Initialize edit mood dropdown
+            editMoodSelect = new SlimSelect('#editMood', {
+                multiple: true,
+                placeholder: 'Select your moods...',
+                allowDeselect: true,
+                closeOnSelect: false,
+                showSearch: true,
+                searchPlaceholder: 'Search moods...',
+                searchText: 'No moods found',
+                searchHighlight: true,
+                showOptionTooltips: true,
+                plugins: {
+                    remove_button: {
+                        label: '×'
+                    }
+                }
+            });
+        }
 
         // Calendar functionality
         let currentCalendarDate = new Date();
@@ -1054,17 +1200,12 @@
             document.getElementById('editEndDate').value = endDate || '';
             document.getElementById('editSymptoms').value = symptoms || '';
             
-            // Reset all mood selections first
-            const editMoodSelect = document.getElementById('editMood');
-            Array.from(editMoodSelect.options).forEach(option => option.selected = false);
-            
-            // Set the appropriate mood selections based on stored data
+            // Set the mood selections using SlimSelect API
             if (mood) {
                 const moodArray = mood.split(', ').map(m => m.trim());
-                moodArray.forEach(moodItem => {
-                    const option = editMoodSelect.querySelector(`option[value="${moodItem}"]`);
-                    if (option) option.selected = true;
-                });
+                editMoodSelect.set(moodArray);
+            } else {
+                editMoodSelect.set([]);
             }
 
             const modal = new bootstrap.Modal(document.getElementById('editModal'));
@@ -1078,9 +1219,8 @@
             const endDate = document.getElementById('editEndDate').value;
             const symptoms = document.getElementById('editSymptoms').value;
             
-            // Collect multiple mood selections from edit dropdown
-            const editMoodSelect = document.getElementById('editMood');
-            const selectedMoods = Array.from(editMoodSelect.selectedOptions).map(option => option.value);
+            // Collect multiple mood selections from SlimSelect
+            const selectedMoods = editMoodSelect.get();
             const moodStr = selectedMoods.join(', ');
 
             if (!startDate) {
