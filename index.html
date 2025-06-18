@@ -46,6 +46,112 @@
             background: #357abd;
             color: white;
         }
+
+        /* Calendar Styles */
+        .calendar-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            color: white;
+            font-weight: 600;
+        }
+
+        .calendar-day-header {
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #f8f9fa;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            background: #f8f9fa;
+            transform: scale(1.05);
+        }
+
+        .calendar-day.other-month {
+            color: #adb5bd;
+            background: #f8f9fa;
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            color: white;
+            font-weight: bold;
+        }
+
+        .calendar-day.period-day {
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            color: white;
+            font-weight: bold;
+        }
+
+        .calendar-day.period-day::after {
+            content: '🌸';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            font-size: 0.7rem;
+        }
+
+        .calendar-day.today.period-day {
+            background: linear-gradient(45deg, #e55a8a, #b03e5f);
+            box-shadow: 0 0 10px rgba(255, 107, 157, 0.5);
+        }
+
+        .calendar-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .legend-color.period-day {
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+        }
+
+        .legend-color.today {
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+        }
     </style>
 </head>
 
@@ -167,6 +273,50 @@
                         <a href="analytics.html" class="btn btn-primary w-100 mt-3">
                             🔍 View Analytics
                         </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar View -->
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">📅 Period Calendar</h5>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <button class="btn btn-outline-primary" id="prevMonth">
+                                <i class="bi bi-chevron-left"></i> Previous
+                            </button>
+                            <h4 id="currentMonth" class="mb-0"></h4>
+                            <button class="btn btn-outline-primary" id="nextMonth">
+                                Next <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="calendar-container">
+                            <div class="calendar-header">
+                                <div class="calendar-day-header">Sun</div>
+                                <div class="calendar-day-header">Mon</div>
+                                <div class="calendar-day-header">Tue</div>
+                                <div class="calendar-day-header">Wed</div>
+                                <div class="calendar-day-header">Thu</div>
+                                <div class="calendar-day-header">Fri</div>
+                                <div class="calendar-day-header">Sat</div>
+                            </div>
+                            <div id="calendarGrid" class="calendar-grid">
+                                <!-- Calendar days will be generated here -->
+                            </div>
+                        </div>
+                        <div class="calendar-legend mt-3">
+                            <div class="legend-item">
+                                <span class="legend-color period-day"></span>
+                                <span>Period Day</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color today"></span>
+                                <span>Today</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -339,6 +489,7 @@
                 `;
                 loadCycleHistory();
                 analyticsContent.innerHTML = '<p>Click "View Analytics" to see your cycle trends.</p>';
+                initializeCalendar();
             } else {
                 googleSignInBtn.classList.remove('d-none');
                 signOutBtn.classList.add('d-none');
@@ -377,6 +528,7 @@
                 showNotification("Period logged successfully!", 'success');
                 document.getElementById('periodForm').reset();
                 loadCycleHistory();
+                updateCalendar();
             }).catch((error) => {
                 console.error("Error logging period:", error);
                 showNotification("Error logging period. Please try again.", 'error');
@@ -494,8 +646,8 @@
                     .then(() => {
                         showNotification("Period entry deleted", 'success');
                         loadCycleHistory();
-                    })
-                    .catch((error) => {
+                        updateCalendar();
+                    }).catch((error) => {
                         console.error("Error deleting period:", error);
                         showNotification("Error deleting entry", 'error');
                         // Re-enable the button if deletion fails
@@ -533,7 +685,150 @@
         document.addEventListener('DOMContentLoaded', () => {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('startDate').value = today;
+            
+            // Initialize calendar
+            initializeCalendar();
         });
+
+        // Calendar functionality
+        let currentCalendarDate = new Date();
+        let periodData = [];
+
+        function initializeCalendar() {
+            // Add event listeners for month navigation
+            document.getElementById('prevMonth').addEventListener('click', () => {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+                generateCalendar();
+            });
+
+            document.getElementById('nextMonth').addEventListener('click', () => {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+                generateCalendar();
+            });
+
+            // Generate initial calendar
+            generateCalendar();
+        }
+
+        function generateCalendar() {
+            if (!currentUser) {
+                document.getElementById('calendarGrid').innerHTML = '<div class="text-center p-4">Please sign in to view your calendar</div>';
+                return;
+            }
+
+            // Update month display
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('currentMonth').textContent = 
+                `${monthNames[currentCalendarDate.getMonth()]} ${currentCalendarDate.getFullYear()}`;
+
+            // Load period data if not already loaded
+            if (periodData.length === 0) {
+                loadPeriodDataForCalendar();
+            } else {
+                renderCalendar();
+            }
+        }
+
+        function loadPeriodDataForCalendar() {
+            db.collection("periods")
+                .where("userId", "==", currentUser.uid)
+                .orderBy("timestamp", "desc")
+                .get()
+                .then(querySnapshot => {
+                    periodData = querySnapshot.docs.map(doc => doc.data());
+                    renderCalendar();
+                })
+                .catch(error => {
+                    console.error("Error loading period data for calendar:", error);
+                    renderCalendar();
+                });
+        }
+
+        function renderCalendar() {
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = '';
+
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDayOfWeek = firstDay.getDay();
+
+            // Get previous month's last few days
+            const prevMonthLastDay = new Date(year, month, 0);
+            const prevMonthDays = prevMonthLastDay.getDate();
+
+            // Generate calendar days
+            let dayCount = 1;
+            const today = new Date();
+            const isToday = (date) => {
+                return date.getDate() === today.getDate() && 
+                       date.getMonth() === today.getMonth() && 
+                       date.getFullYear() === today.getFullYear();
+            };
+
+            const isPeriodDay = (date) => {
+                const dateStr = date.toISOString().split('T')[0];
+                return periodData.some(period => {
+                    const startDate = new Date(period.startDate);
+                    const endDate = period.endDate ? new Date(period.endDate) : startDate;
+                    const checkDate = new Date(dateStr);
+                    return checkDate >= startDate && checkDate <= endDate;
+                });
+            };
+
+            // Create calendar grid
+            for (let i = 0; i < 42; i++) { // 6 rows * 7 days
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+
+                if (i < startingDayOfWeek) {
+                    // Previous month days
+                    const prevDay = prevMonthDays - startingDayOfWeek + i + 1;
+                    const prevDate = new Date(year, month - 1, prevDay);
+                    dayElement.textContent = prevDay;
+                    dayElement.classList.add('other-month');
+                    if (isPeriodDay(prevDate)) {
+                        dayElement.classList.add('period-day');
+                    }
+                } else if (dayCount <= daysInMonth) {
+                    // Current month days
+                    const currentDate = new Date(year, month, dayCount);
+                    dayElement.textContent = dayCount;
+                    
+                    if (isToday(currentDate)) {
+                        dayElement.classList.add('today');
+                    }
+                    if (isPeriodDay(currentDate)) {
+                        dayElement.classList.add('period-day');
+                    }
+                    
+                    dayCount++;
+                } else {
+                    // Next month days
+                    const nextDay = dayCount - daysInMonth;
+                    const nextDate = new Date(year, month + 1, nextDay);
+                    dayElement.textContent = nextDay;
+                    dayElement.classList.add('other-month');
+                    if (isPeriodDay(nextDate)) {
+                        dayElement.classList.add('period-day');
+                    }
+                    dayCount++;
+                }
+
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        // Update calendar when new period is logged
+        function updateCalendar() {
+            periodData = [];
+            loadPeriodDataForCalendar();
+        }
 
         // Add this to your existing script
         document.getElementById('shareProfile').addEventListener('click', async () => {
@@ -738,6 +1033,7 @@
                 .then(() => {
                     showNotification("Period updated successfully!", 'success');
                     loadCycleHistory();
+                    updateCalendar();
                     bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
                 })
                 .catch((error) => {
