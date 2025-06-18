@@ -100,9 +100,11 @@
         }
 
         .calendar-day.today {
-            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            background: linear-gradient(45deg, #28a745, #20c997);
             color: white;
             font-weight: bold;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+            border: 2px solid #28a745;
         }
 
         .calendar-day.period-day {
@@ -122,6 +124,15 @@
         .calendar-day.today.period-day {
             background: linear-gradient(45deg, #e55a8a, #b03e5f);
             box-shadow: 0 0 10px rgba(255, 107, 157, 0.5);
+            border: 2px solid #e55a8a;
+        }
+
+        .calendar-day.today::after {
+            content: '📅';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            font-size: 0.7rem;
         }
 
         .calendar-legend {
@@ -150,7 +161,7 @@
         }
 
         .legend-color.today {
-            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            background: linear-gradient(45deg, #28a745, #20c997);
         }
     </style>
 </head>
