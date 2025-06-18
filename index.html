@@ -163,6 +163,47 @@
         .legend-color.today {
             background: linear-gradient(45deg, #28a745, #20c997);
         }
+
+        /* Mood Checkboxes Styles */
+        .mood-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .mood-checkboxes .form-check {
+            margin: 0;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+            transition: all 0.2s ease;
+        }
+
+        .mood-checkboxes .form-check:hover {
+            background: #f8f9fa;
+            border-color: #ff6b9d;
+            transform: translateY(-1px);
+        }
+
+        .mood-checkboxes .form-check-input:checked + .form-check-label {
+            color: #c44569;
+            font-weight: 600;
+        }
+
+        .mood-checkboxes .form-check-input:checked {
+            background-color: #ff6b9d;
+            border-color: #c44569;
+        }
+
+        .mood-checkboxes .form-check-label {
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 
@@ -211,53 +252,20 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="mood" class="form-label">How are you feeling? (Select all that apply)</label>
-                                <div class="mood-checkboxes">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="Happy" id="moodHappy">
-                                        <label class="form-check-label" for="moodHappy">😊 Happy</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="Calm" id="moodCalm">
-                                        <label class="form-check-label" for="moodCalm">😌 Calm</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="Energetic" id="moodEnergetic">
-                                        <label class="form-check-label" for="moodEnergetic">⚡ Energetic</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="Tired" id="moodTired">
-                                        <label class="form-check-label" for="moodTired">😴 Tired</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="Irritable" id="moodIrritable">
-                                        <label class="form-check-label" for="moodIrritable">😤 Irritable</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="Anxious" id="moodAnxious">
-                                        <label class="form-check-label" for="moodAnxious">😰 Anxious</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="Sad" id="moodSad">
-                                        <label class="form-check-label" for="moodSad">😢 Sad</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="Stressed" id="moodStressed">
-                                        <label class="form-check-label" for="moodStressed">😰 Stressed</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="Crampy" id="moodCrampy">
-                                        <label class="form-check-label" for="moodCrampy">🤕 Crampy</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="Bloated" id="moodBloated">
-                                        <label class="form-check-label" for="moodBloated">🤰 Bloated</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="Normal" id="moodNormal">
-                                        <label class="form-check-label" for="moodNormal">😐 Normal</label>
-                                    </div>
-                                </div>
+                                <label for="mood" class="form-label">How are you feeling? (Hold Ctrl/Cmd to select multiple)</label>
+                                <select class="form-select" id="mood" multiple size="6">
+                                    <option value="Happy">😊 Happy</option>
+                                    <option value="Calm">😌 Calm</option>
+                                    <option value="Energetic">⚡ Energetic</option>
+                                    <option value="Tired">😴 Tired</option>
+                                    <option value="Irritable">😤 Irritable</option>
+                                    <option value="Anxious">😰 Anxious</option>
+                                    <option value="Sad">😢 Sad</option>
+                                    <option value="Stressed">😰 Stressed</option>
+                                    <option value="Crampy">🤕 Crampy</option>
+                                    <option value="Bloated">🤰 Bloated</option>
+                                    <option value="Normal">😐 Normal</option>
+                                </select>
                             </div>
                             <div class="mb-3">
                                 <label for="symptoms" class="form-label">Symptoms (Optional)</label>
@@ -419,9 +427,8 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="editMood" class="form-label">How were you feeling?</label>
-                            <select class="form-select" id="editMood">
-                                <option value="">Select your mood...</option>
+                            <label for="editMood" class="form-label">How were you feeling? (Hold Ctrl/Cmd to select multiple)</label>
+                            <select class="form-select" id="editMood" multiple size="6">
                                 <option value="Happy">😊 Happy</option>
                                 <option value="Calm">😌 Calm</option>
                                 <option value="Energetic">⚡ Energetic</option>
@@ -553,7 +560,11 @@
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
             const symptoms = document.getElementById('symptoms').value;
-            const mood = document.getElementById('mood').value;
+            
+            // Collect multiple mood selections from dropdown
+            const moodSelect = document.getElementById('mood');
+            const selectedMoods = Array.from(moodSelect.selectedOptions).map(option => option.value);
+            const mood = selectedMoods.join(', ');
 
             if (!startDate) {
                 showNotification("Please enter a start date.", 'error');
@@ -1042,7 +1053,19 @@
             document.getElementById('editStartDate').value = startDate;
             document.getElementById('editEndDate').value = endDate || '';
             document.getElementById('editSymptoms').value = symptoms || '';
-            document.getElementById('editMood').value = mood || '';
+            
+            // Reset all mood selections first
+            const editMoodSelect = document.getElementById('editMood');
+            Array.from(editMoodSelect.options).forEach(option => option.selected = false);
+            
+            // Set the appropriate mood selections based on stored data
+            if (mood) {
+                const moodArray = mood.split(', ').map(m => m.trim());
+                moodArray.forEach(moodItem => {
+                    const option = editMoodSelect.querySelector(`option[value="${moodItem}"]`);
+                    if (option) option.selected = true;
+                });
+            }
 
             const modal = new bootstrap.Modal(document.getElementById('editModal'));
             modal.show();
@@ -1054,7 +1077,11 @@
             const startDate = document.getElementById('editStartDate').value;
             const endDate = document.getElementById('editEndDate').value;
             const symptoms = document.getElementById('editSymptoms').value;
-            const mood = document.getElementById('editMood').value;
+            
+            // Collect multiple mood selections from edit dropdown
+            const editMoodSelect = document.getElementById('editMood');
+            const selectedMoods = Array.from(editMoodSelect.selectedOptions).map(option => option.value);
+            const moodStr = selectedMoods.join(', ');
 
             if (!startDate) {
                 showNotification("Please enter a start date.", 'error');
@@ -1070,7 +1097,7 @@
                 startDate: startDate,
                 endDate: endDate || null,
                 symptoms: symptoms || '',
-                mood: mood || '',
+                mood: moodStr || '',
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             })
                 .then(() => {
