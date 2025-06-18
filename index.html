@@ -211,21 +211,53 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="mood" class="form-label">How are you feeling?</label>
-                                <select class="form-select" id="mood">
-                                    <option value="">Select your mood...</option>
-                                    <option value="Happy">😊 Happy</option>
-                                    <option value="Calm">😌 Calm</option>
-                                    <option value="Energetic">⚡ Energetic</option>
-                                    <option value="Tired">😴 Tired</option>
-                                    <option value="Irritable">😤 Irritable</option>
-                                    <option value="Anxious">😰 Anxious</option>
-                                    <option value="Sad">😢 Sad</option>
-                                    <option value="Stressed">😰 Stressed</option>
-                                    <option value="Crampy">🤕 Crampy</option>
-                                    <option value="Bloated">🤰 Bloated</option>
-                                    <option value="Normal">😐 Normal</option>
-                                </select>
+                                <label for="mood" class="form-label">How are you feeling? (Select all that apply)</label>
+                                <div class="mood-checkboxes">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Happy" id="moodHappy">
+                                        <label class="form-check-label" for="moodHappy">😊 Happy</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Calm" id="moodCalm">
+                                        <label class="form-check-label" for="moodCalm">😌 Calm</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Energetic" id="moodEnergetic">
+                                        <label class="form-check-label" for="moodEnergetic">⚡ Energetic</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Tired" id="moodTired">
+                                        <label class="form-check-label" for="moodTired">😴 Tired</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Irritable" id="moodIrritable">
+                                        <label class="form-check-label" for="moodIrritable">😤 Irritable</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Anxious" id="moodAnxious">
+                                        <label class="form-check-label" for="moodAnxious">😰 Anxious</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Sad" id="moodSad">
+                                        <label class="form-check-label" for="moodSad">😢 Sad</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Stressed" id="moodStressed">
+                                        <label class="form-check-label" for="moodStressed">😰 Stressed</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Crampy" id="moodCrampy">
+                                        <label class="form-check-label" for="moodCrampy">🤕 Crampy</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Bloated" id="moodBloated">
+                                        <label class="form-check-label" for="moodBloated">🤰 Bloated</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Normal" id="moodNormal">
+                                        <label class="form-check-label" for="moodNormal">😐 Normal</label>
+                                    </div>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="symptoms" class="form-label">Symptoms (Optional)</label>
