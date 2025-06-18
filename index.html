@@ -94,6 +94,23 @@
                                 </div>
                             </div>
                             <div class="mb-3">
+                                <label for="mood" class="form-label">How are you feeling?</label>
+                                <select class="form-select" id="mood">
+                                    <option value="">Select your mood...</option>
+                                    <option value="Happy">😊 Happy</option>
+                                    <option value="Calm">😌 Calm</option>
+                                    <option value="Energetic">⚡ Energetic</option>
+                                    <option value="Tired">😴 Tired</option>
+                                    <option value="Irritable">😤 Irritable</option>
+                                    <option value="Anxious">😰 Anxious</option>
+                                    <option value="Sad">😢 Sad</option>
+                                    <option value="Stressed">😰 Stressed</option>
+                                    <option value="Crampy">🤕 Crampy</option>
+                                    <option value="Bloated">🤰 Bloated</option>
+                                    <option value="Normal">😐 Normal</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
                                 <label for="symptoms" class="form-label">Symptoms (Optional)</label>
                                 <textarea class="form-control" id="symptoms" rows="3"
                                     placeholder="Cramps, headache, mood changes, etc."></textarea>
@@ -116,6 +133,7 @@
                                 <tr>
                                     <th>Start Date</th>
                                     <th>End Date</th>
+                                    <th>Mood</th>
                                     <th>Symptoms</th>
                                     <th>Actions</th>
                                 </tr>
@@ -206,6 +224,23 @@
                                 <label for="editEndDate" class="form-label">End Date</label>
                                 <input type="date" class="form-control" id="editEndDate">
                             </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editMood" class="form-label">How were you feeling?</label>
+                            <select class="form-select" id="editMood">
+                                <option value="">Select your mood...</option>
+                                <option value="Happy">😊 Happy</option>
+                                <option value="Calm">😌 Calm</option>
+                                <option value="Energetic">⚡ Energetic</option>
+                                <option value="Tired">😴 Tired</option>
+                                <option value="Irritable">😤 Irritable</option>
+                                <option value="Anxious">😰 Anxious</option>
+                                <option value="Sad">😢 Sad</option>
+                                <option value="Stressed">😰 Stressed</option>
+                                <option value="Crampy">🤕 Crampy</option>
+                                <option value="Bloated">🤰 Bloated</option>
+                                <option value="Normal">😐 Normal</option>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="editSymptoms" class="form-label">Symptoms</label>
@@ -324,6 +359,7 @@
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
             const symptoms = document.getElementById('symptoms').value;
+            const mood = document.getElementById('mood').value;
 
             if (!startDate) {
                 showNotification("Please enter a start date.", 'error');
@@ -335,6 +371,7 @@
                 startDate: startDate,
                 endDate: endDate || null,
                 symptoms: symptoms || '',
+                mood: mood || '',
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             }).then(() => {
                 showNotification("Period logged successfully!", 'success');
@@ -365,9 +402,10 @@
                                 return {
                                     startDate: data.startDate,
                                     endDate: data.endDate || 'Ongoing',
+                                    mood: data.mood || 'Unknown',
                                     symptoms: data.symptoms || 'None',
                                     actions: `
-                            <button class="btn btn-sm btn-outline-primary me-2" onclick="openEditModal('${doc.id}', '${data.startDate}', '${data.endDate || ''}', '${data.symptoms || ''}')">
+                            <button class="btn btn-sm btn-outline-primary me-2" onclick="openEditModal('${doc.id}', '${data.startDate}', '${data.endDate || ''}', '${data.symptoms || ''}', '${data.mood || ''}')">
                                 ✏️ 
                             </button>
                             <button class="btn btn-sm btn-outline-danger" onclick="deletePeriod('${doc.id}')">
@@ -387,6 +425,7 @@
                 columns: [
                     { data: 'startDate' },
                     { data: 'endDate' },
+                    { data: 'mood' },
                     { data: 'symptoms' },
                     { data: 'actions', orderable: false }
                 ],
@@ -660,11 +699,12 @@
         }
 
         // Open the edit modal with existing data
-        function openEditModal(docId, startDate, endDate, symptoms) {
+        function openEditModal(docId, startDate, endDate, symptoms, mood) {
             document.getElementById('editDocId').value = docId;
             document.getElementById('editStartDate').value = startDate;
             document.getElementById('editEndDate').value = endDate || '';
             document.getElementById('editSymptoms').value = symptoms || '';
+            document.getElementById('editMood').value = mood || '';
 
             const modal = new bootstrap.Modal(document.getElementById('editModal'));
             modal.show();
@@ -676,6 +716,7 @@
             const startDate = document.getElementById('editStartDate').value;
             const endDate = document.getElementById('editEndDate').value;
             const symptoms = document.getElementById('editSymptoms').value;
+            const mood = document.getElementById('editMood').value;
 
             if (!startDate) {
                 showNotification("Please enter a start date.", 'error');
@@ -691,6 +732,7 @@
                 startDate: startDate,
                 endDate: endDate || null,
                 symptoms: symptoms || '',
+                mood: mood || '',
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             })
                 .then(() => {
